@@ -19,10 +19,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function containsSqlInjection($input) {
-    // Implement your SQL injection detection logic here
-    // For simplicity, we are checking for the presence of "SELECT" keyword in the input
-    return stripos($input, 'SELECT') !== false;
+    // Define common SQL injection patterns
+    $sqlInjectionPatterns = [
+        '/\bUNION\b/i',
+        '/\bSELECT\b/i',
+        '/\bINSERT\b/i',
+        '/\bUPDATE\b/i',
+        '/\bDELETE\b/i',
+        '/\bFROM\b/i',
+        '/\bWHERE\b/i',
+        '/\bDROP\b/i',
+        '/\bCREATE\b/i',
+        '/\bALTER\b/i',
+        '/\bEXEC\b/i',
+    ];
+
+    // Check for SQL injection patterns
+    foreach ($sqlInjectionPatterns as $pattern) {
+        if (preg_match($pattern, $input)) {
+            return true; // Detected SQL injection attempt
+        }
+    }
+
+    return false; // No SQL injection patterns found
 }
+
 ?>
 
 <!DOCTYPE html>
